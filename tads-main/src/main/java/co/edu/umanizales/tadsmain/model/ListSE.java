@@ -103,7 +103,7 @@ public class ListSE {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while(temp != null){
-                if(temp.getData().getGender()=='M')
+                if(temp.getData().getGender().equals('M'))
                 {
                     listCp.addToStart(temp.getData());
                 }
@@ -147,6 +147,22 @@ public class ListSE {
         return count;
     }
 
+    public int getCountKidByLocationAndGenderAndGreaterThanAge(String code, boolean id, byte age) {
+        int count = 0;
+        if (this.head != null) {
+            Node temp = head;
+            while (temp != null) {
+                if (temp.getData().getGender().isId() == id
+                        && temp.getData().getLocation().getCode().equals(code) && temp.getData().getAge() > age) {
+                    count++;
+                }
+                temp = temp.getNext();
+            }
+            return count;
+        }
+        return 0;
+    }
+
     public float getAverageAgeByKid() {
 
         if (head != null) {
@@ -165,18 +181,18 @@ public class ListSE {
         return (float)0;
     }
 
-    public boolean getKidById (String identification)
+    public boolean confirmKidById (String identification)
     {
         if(head != null){
             Node temp = head;
             while(temp !=null)
             {
                 if(temp.getData().getIdentification().equals(identification))
-                    return true;
+                    return true; //si retorna true es que la identificacion ya exite
+                temp = temp.getNext();
             }
-            temp = temp.getNext();
         }
-        return false;
+        return false; // si retorna false es que la identificacion no existe, osea se puede agregar
     }
 
 }
