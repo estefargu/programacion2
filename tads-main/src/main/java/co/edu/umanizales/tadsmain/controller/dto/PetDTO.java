@@ -6,7 +6,8 @@ import lombok.Data;
 public class PetDTO {
     private String name;
     private String id;
-    private String typeOfAnimal;
+    private char gender;
+    private String type;
     private byte age;
-    private double weight;
+    private String codeLocation;
 }
