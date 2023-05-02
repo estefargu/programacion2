@@ -299,16 +299,16 @@ public class ListDE {
 
     public ReportPetsByAgeRangeDTO getGenerateAgeRangeReport(byte minAge, byte maxAge) {
         int numPetsByRange = 0;
-        List<PetDTO> petsByRange = new ArrayList<>();
+        List<Pet> petsByRange = new ArrayList<>();
 
         if (head != null) {
             NodeDE temp = head;
             while (temp != null) {
-                PetDTO pet = temp.getData().petDTO();
-                int age = pet.getAge();
+                Pet petCopy = temp.getData();
+                int age = petCopy.getAge();
                 if (age >= minAge && age <= maxAge) {
                     numPetsByRange++;
-                    petsByRange.add(pet);
+                    petsByRange.add(petCopy);
                 }
                 temp = temp.getNext();
             }

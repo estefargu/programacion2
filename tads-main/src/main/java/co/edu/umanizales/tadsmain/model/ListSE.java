@@ -301,7 +301,6 @@ public class ListSE {
         if (head == null || position <= 0) {
             return;
         }
-
         Node temp = head;
         Node prev = null;
         int count = 1;
@@ -359,16 +358,16 @@ public class ListSE {
 
     public ReportKidsByAgeRangeDTO getGenerateAgeRangeReport(byte minAge, byte maxAge) {
         int numKidsByRange = 0;
-        List<KidDTO> kidsByRange = new ArrayList<>();
+        List<Kid> kidsByRange = new ArrayList<>();
 
         if (head != null) {
             Node temp = head;
             while (temp != null) {
-                KidDTO kid = temp.getData().kidDTO();
-                int age = kid.getAge();
+                Kid kidCopy = temp.getData();
+                int age = kidCopy.getAge();
                 if (age >= minAge && age <= maxAge) {
                     numKidsByRange++;
-                    kidsByRange.add(kid);
+                    kidsByRange.add(kidCopy);
                 }
                 temp = temp.getNext();
             }

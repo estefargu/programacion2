@@ -14,15 +14,4 @@ public class Kid {
     private byte age;
     private char gender;
     private Location location;
-
-    public KidDTO kidDTO() {
-        KidDTO dto = new KidDTO();
-        dto.setName(this.name);
-        dto.setIdentification(this.identification);
-        dto.setAge(this.age);
-        dto.setGender(this.gender);
-        dto.setCodeLocation(location.getCode());
-
-        return dto;
-    }
 }

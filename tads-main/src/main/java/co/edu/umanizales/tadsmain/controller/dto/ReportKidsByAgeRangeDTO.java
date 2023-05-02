@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ReportKidsByAgeRangeDTO {
-    private int numKidsByRange;
+    private int totalKidsByRange;
     private byte ageMin;
     private byte ageMax;
-    private List<KidDTO> report;
+    private List<Kid> report;
 
 }
