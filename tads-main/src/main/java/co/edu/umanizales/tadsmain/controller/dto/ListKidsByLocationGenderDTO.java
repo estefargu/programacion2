@@ -18,7 +18,7 @@ public class ListKidsByLocationGenderDTO {
     }
 
     // método actualizar
-    public void updateQuantity(String city,char gender){
+    public void updateQuantity(String city, String gender){
         for(KidsByLocationGenderQuantityDTO loc:kidsByLocationGenderQuantityDTOS){
             if(loc.getCity().equals(city)){
                 for(KidsByGenderDTO genderDTO: loc.getGenders()){

@@ -1,8 +1,5 @@
 package co.edu.umanizales.tadsmain.model;
 
-import co.edu.umanizales.tadsmain.controller.dto.KidDTO;
-import co.edu.umanizales.tadsmain.controller.dto.PetDTO;
-import co.edu.umanizales.tadsmain.controller.dto.ReportKidsByAgeRangeDTO;
 import co.edu.umanizales.tadsmain.controller.dto.ReportPetsByAgeRangeDTO;
 import lombok.Data;
 
@@ -111,7 +108,7 @@ public class ListDE {
             ListDE listCp = new ListDE();
             NodeDE temp = this.head;
             while (temp != null) {
-                if (temp.getData().getGender() == 'M') {
+                if (temp.getData().getGender().equals("M")) {
                     listCp.addToStart(temp.getData());
                 } else {
                     listCp.addToEnd(temp.getData());
@@ -130,11 +127,11 @@ public class ListDE {
             int countMale = 0;
             NodeDE temp = head;
             while (temp != null) {
-                if (temp.getData().getGender() == 'M') {
+                if (temp.getData().getGender().equals("M")) {
                     listCopy.addInPosition(temp.getData(), countMale + 1);
                     countMale = countMale + 2;
                 }
-                if (temp.getData().getGender() == 'F') {
+                if (temp.getData().getGender().equals("F")) {
                     listCopy.addInPosition(temp.getData(), countFemale + 2);
                     countFemale = countFemale + 2;
                 }

@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class ListSEController {
                 200,listSEService.getKids().getHead(),null), HttpStatus.OK);
     }
 
-    @GetMapping("/invert")
+   @GetMapping("/invert")
     public ResponseEntity<ResponseDTO> invert(){
         listSEService.invert();
         return new ResponseEntity<>(new ResponseDTO(
@@ -45,7 +48,7 @@ public class ListSEController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> addKidToStart(@RequestBody KidDTO kidDTO){
+    public ResponseEntity<ResponseDTO> addKidToStart(@RequestBody @Valid KidDTO kidDTO){
         Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
         if(location == null) {
             return new ResponseEntity<>(new ResponseDTO(
@@ -68,7 +71,7 @@ public class ListSEController {
     }
 
     @PostMapping(path ="/addinposition/{position}")
-    public ResponseEntity<ResponseDTO> addInPosition(@RequestBody KidDTO kidDTO, @PathVariable int position) {
+    public ResponseEntity<ResponseDTO> addInPosition(@Valid @RequestBody KidDTO kidDTO, @PathVariable int position) {
         Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
         if(location == null) {
             return new ResponseEntity<>(new ResponseDTO(
@@ -103,7 +106,7 @@ public class ListSEController {
     }
 
     @PostMapping(path="/addtoend")
-    public ResponseEntity<ResponseDTO> addKid(@RequestBody KidDTO kidDTO){
+    public ResponseEntity<ResponseDTO> addKid(@Valid @RequestBody KidDTO kidDTO){
         Location location = locationService.getLocationByCode(kidDTO.getCodeLocation());
         if(location == null) {
             return new ResponseEntity<>(new ResponseDTO(
@@ -281,7 +284,7 @@ public class ListSEController {
                 + identification + " ha ganado " + position + " posición/es", null), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/ordertoendkidbyletter/{letter}")
+   @GetMapping(path = "/ordertoendkidbyletter/{letter}")
     public ResponseEntity<ResponseDTO> getOrderToEndKidByLetter(@PathVariable String letter) {
         listSEService.getKids().getOrderToEndKidByLetter(letter);
         return new ResponseEntity<>(new ResponseDTO(200,
@@ -294,8 +297,5 @@ public class ListSEController {
         ReportKidsByAgeRangeDTO report = listSEService.getKids().getGenerateAgeRangeReport(ageMin, ageMax);
         return new ResponseEntity<>(new ResponseDTO(200, report, null), HttpStatus.OK);
     }
-
-
-
 
 }

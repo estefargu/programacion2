@@ -1,6 +1,5 @@
 package co.edu.umanizales.tadsmain.model;
 
-import co.edu.umanizales.tadsmain.controller.dto.KidDTO;
 import co.edu.umanizales.tadsmain.controller.dto.ListKidsByLocationGenderDTO;
 import co.edu.umanizales.tadsmain.controller.dto.ReportKidsByAgeRangeDTO;
 import lombok.Data;
@@ -85,6 +84,7 @@ public class ListSE {
         size++;
     }
 
+
      /*Agregar en posiscion(Niño y la posicion) -> Entrada por parametro
     Hay datos
     Si
@@ -130,6 +130,7 @@ public class ListSE {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while (temp != null) {
+
                 listCp.addToStart(temp.getData());
                 temp = temp.getNext();
             }
@@ -137,12 +138,12 @@ public class ListSE {
         }
     }
 
-    public void orderBoysToStart() {
+   public void orderBoysToStart(){
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while (temp != null) {
-                if (temp.getData().getGender() == 'M') {
+                if (temp.getData().getGender().equals("M")) {
                     listCp.addToStart(temp.getData());
                 } else {
                     listCp.add(temp.getData());
@@ -250,11 +251,11 @@ public class ListSE {
             int countBoy = 0;
             Node temp = head;
             while (temp != null) {
-                if (temp.getData().getGender() == 'M') {
+                if (temp.getData().getGender().equals("M")) {
                     listCopy.addInPosition(temp.getData(), countBoy + 1);
                     countBoy = countBoy + 2;
                 }
-                if (temp.getData().getGender() == 'F') {
+                if (temp.getData().getGender().equals("F")) {
                     listCopy.addInPosition(temp.getData(), countGirl + 2);
                     countGirl = countGirl + 2;
                 }
@@ -265,7 +266,7 @@ public class ListSE {
         }
     }
 
-    public void getLosePosition(String identification, int position) {
+    public void getLosePosition(String identification, int position){
         if (head == null || position <= 0) {
             return;
         }
@@ -339,7 +340,7 @@ public class ListSE {
         return 0;
     }
 
-    public void getOrderToEndKidByLetter(String letter) {
+   public void getOrderToEndKidByLetter(String letter){
         if (head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;

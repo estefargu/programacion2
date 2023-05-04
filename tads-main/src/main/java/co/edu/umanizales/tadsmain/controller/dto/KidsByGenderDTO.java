@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class KidsByGenderDTO {
-    private char gender;
+    private String gender;
     private int quantity;
 }
