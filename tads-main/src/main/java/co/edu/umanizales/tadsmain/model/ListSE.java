@@ -64,8 +64,8 @@ public class ListSE {
      */
     public void addToStart(Kid kid) throws ListSEException{
         if (head != null) {
-            if(head.getData().getIdentification().equals(kid.getIdentification())) {
-                throw new ListSEException("Ya existe un niño con esa identificacion");
+            if (head.getData().getIdentification().equals(kid.getIdentification())) {
+                throw new ListSEException("Ya existe un niño con esa identificación");
             }
             Node newNode = new Node(kid);
             newNode.setNext(head);
@@ -77,8 +77,8 @@ public class ListSE {
     }
 
     public void addInPosition(Kid kid, int position) throws ListSEException {
-        if (position <= 0 || position > size + 1) {
-            throw new ListSEException("Posición inválida");
+        if(position-1>size){
+            throw new ListSEException("Posicion invalida");
         }
         if (head != null) {
             if (head.getData().getIdentification().equals(kid.getIdentification())) {
@@ -95,8 +95,7 @@ public class ListSE {
             }
             Node newNode = new Node(kid);
             if (position == 1) {
-                newNode.setNext(head);
-                head = newNode;
+               addToStart(kid);
             } else {
                 newNode.setNext(temp.getNext());
                 temp.setNext(newNode);
@@ -106,8 +105,6 @@ public class ListSE {
         }
         size++;
     }
-
-
 
      /*Agregar en posiscion(Niño y la posicion) -> Entrada por parametro
     Hay datos
@@ -384,19 +381,6 @@ public class ListSE {
        throw new ListSEException("No se encontró la identificación del nino");
     }
 
-    public int getPositionById(String identification) {
-        int position = 1;
-        Node temp = head;
-        while (temp != null) {
-            if (temp.getData().getIdentification().equals(identification)) {
-                return position;
-            }
-            temp = temp.getNext();
-            position++;
-        }
-        return 0;
-    }
-
     public void getOrderToEndKidByLetter(String letter) throws ListSEException {
         if (head != null) {
             ListSE listCp = new ListSE();
@@ -442,5 +426,6 @@ public class ListSE {
         ReportKidsByAgeRangeDTO report = new ReportKidsByAgeRangeDTO(numKidsByRange, minAge, maxAge, kidsByRange);
         return report;
     }
+
 
 }
