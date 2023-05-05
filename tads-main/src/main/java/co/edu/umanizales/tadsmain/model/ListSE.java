@@ -2,6 +2,7 @@ package co.edu.umanizales.tadsmain.model;
 
 import co.edu.umanizales.tadsmain.controller.dto.ListKidsByLocationGenderDTO;
 import co.edu.umanizales.tadsmain.controller.dto.ReportKidsByAgeRangeDTO;
+import co.edu.umanizales.tadsmain.exception.ListSEException;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -28,19 +29,28 @@ public class ListSE {
     no
         metemos el niño en el costal y ese costal es la cabeza
      */
-    public void add(Kid kid) {
-        if (head != null) {
+    public void add(Kid kid) throws ListSEException {
+        if(head != null){
             Node temp = head;
-            while (temp.getNext() != null) {
+            while(temp.getNext() !=null)
+            {
+                if(temp.getData().getIdentification().equals(kid.getIdentification())){
+                    throw new ListSEException("Ya existe un niño con esa identificacion");
+                }
                 temp = temp.getNext();
+
+            }
+            if(temp.getData().getIdentification().equals(kid.getIdentification())){
+                throw new ListSEException("Ya existe un niño con esa identificacion");
             }
             /// Parado en el último
             Node newNode = new Node(kid);
             temp.setNext(newNode);
-        } else {
+        }
+        else {
             head = new Node(kid);
         }
-        size++;
+        size ++;
     }
 
     /* Adicionar al inicio
@@ -52,8 +62,11 @@ public class ListSE {
     no
         meto el niño en un costal y lo asigno a la cabez
      */
-    public void addToStart(Kid kid) {
+    public void addToStart(Kid kid) throws ListSEException{
         if (head != null) {
+            if(head.getData().getIdentification().equals(kid.getIdentification())) {
+                throw new ListSEException("Ya existe un niño con esa identificacion");
+            }
             Node newNode = new Node(kid);
             newNode.setNext(head);
             head = newNode;
@@ -63,18 +76,28 @@ public class ListSE {
         size++;
     }
 
-    public void addInPosition(Kid kid, int position) {
+    public void addInPosition(Kid kid, int position) throws ListSEException {
+        if (position <= 0 || position > size + 1) {
+            throw new ListSEException("Posición inválida");
+        }
         if (head != null) {
-            if (position == 1) {
-                addToStart(kid);
-            } else {
-                Node temp = head;
-                int count = 1;
-                while (count < position - 1 && temp.getNext() != null) {
-                    temp = temp.getNext();
-                    count++;
+            if (head.getData().getIdentification().equals(kid.getIdentification())) {
+                throw new ListSEException("Ya existe un niño con esa identificación");
+            }
+            Node temp = head;
+            int count = 1;
+            while (count < position - 1 && temp.getNext() != null) {
+                if (temp.getNext().getData().getIdentification().equals(kid.getIdentification())) {
+                    throw new ListSEException("Ya existe un niño con esa identificación");
                 }
-                Node newNode = new Node(kid);
+                temp = temp.getNext();
+                count++;
+            }
+            Node newNode = new Node(kid);
+            if (position == 1) {
+                newNode.setNext(head);
+                head = newNode;
+            } else {
                 newNode.setNext(temp.getNext());
                 temp.setNext(newNode);
             }
@@ -83,6 +106,7 @@ public class ListSE {
         }
         size++;
     }
+
 
 
      /*Agregar en posiscion(Niño y la posicion) -> Entrada por parametro
@@ -100,22 +124,28 @@ public class ListSE {
         Crear nuevo costal que tiene de entrada un niño y le asigno la cabeza
      */
 
-    public void deleteByIdentification(String identification) {
+    public void deleteByIdentification(String identification) throws ListSEException {
         if (head != null) {
             if (head.getData().getIdentification().equals(identification)) {
                 head = head.getNext();
                 size--;
+            } else {
+                Node temp = head;
+                while (temp.getNext() != null && !temp.getNext().getData().getIdentification().equals(identification)) {
+                    temp = temp.getNext();
+                }
+                if (temp.getNext() != null) {
+                    temp.setNext(temp.getNext().getNext());
+                    size--;
+                } else {
+                    throw new ListSEException("No se encontró un niño con la identificación " + identification);
+                }
             }
-            Node temp = head;
-            while (temp.getNext() != null && temp.getNext().getData().getIdentification().equals(identification)) {
-                temp = temp.getNext();
-            }
-            if (temp.getNext() != null) {
-                temp.setNext(temp.getNext().getNext());
-                size--;
-            }
+        } else {
+            throw new ListSEException("La lista está vacía");
         }
     }
+
 
     /*Eliminar niño (identificacion niño) -> Entra por parametro
       Cabeza es igual al primer costal o primer nodo
@@ -125,51 +155,57 @@ public class ListSE {
         Paro y elimino al niño
       No
         Sigo hasta encontarar la posicion a eliminar*/
-    public void invert() {
+    public void invert() throws ListSEException {
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while (temp != null) {
-
                 listCp.addToStart(temp.getData());
                 temp = temp.getNext();
             }
             this.head = listCp.getHead();
+        } else {
+            throw new ListSEException("La lista está vacía");
         }
     }
 
-   public void orderBoysToStart(){
-        if (this.head != null) {
-            ListSE listCp = new ListSE();
-            Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getGender().equals("M")) {
-                    listCp.addToStart(temp.getData());
-                } else {
-                    listCp.add(temp.getData());
+
+    public void orderBoysToStart() throws ListSEException {
+            if (this.head != null) {
+                ListSE listCp = new ListSE();
+                Node temp = this.head;
+                while (temp != null) {
+                    if (temp.getData().getGender().equals("M")) {
+                        listCp.addToStart(temp.getData());
+                    } else {
+                        listCp.add(temp.getData());
+                    }
+
+                    temp = temp.getNext();
                 }
-
-                temp = temp.getNext();
+                this.head = listCp.getHead();
+            }else {
+                throw new ListSEException("La lista esta vacia");
             }
-            this.head = listCp.getHead();
-        }
+
     }
 
-    public void changeExtremes() {
-        if (this.head != null && this.head.getNext() != null) {
+    public void changeExtremes() throws ListSEException {
+        if (this.head == null || this.head.getNext() == null) {
+            throw new ListSEException("No hay suficientes ninos para intercambiar los extremos");
+        } else {
             Node temp = this.head;
             while (temp.getNext() != null) {
                 temp = temp.getNext();
             }
-            //temp está en el último
+            // temp está en el último nodo
             Kid copy = this.head.getData();
             this.head.setData(temp.getData());
             temp.setData(copy);
         }
-
     }
 
-    public int getCountKidsByLocationCode(String code) {
+    public int getCountKidsByLocationCode(String code){
         int count = 0;
         if (this.head != null) {
             Node temp = this.head;
@@ -181,6 +217,7 @@ public class ListSE {
             }
         }
         return count;
+
     }
 
     public void getListKidsByLocationGendersByAge(byte age, ListKidsByLocationGenderDTO report) {
@@ -227,10 +264,16 @@ public class ListSE {
         return true; // si retorna true es que la identificacion no existe, osea se puede agregar
     }
 
-    public void deleteByAge(byte age) {
-        if (head != null && head.getData().getAge() == age) {
+
+    public void deleteByAge(byte age)throws ListSEException {
+        boolean exist = false;
+        if (head == null) {
+            throw new ListSEException("La lista de ninos está vacía");
+        }
+        while(head != null && head.getData().getAge() == age) {
             head = head.getNext();
             size--;
+            exist=true;
         }
 
         Node temp = head;
@@ -238,13 +281,18 @@ public class ListSE {
             if (temp.getNext().getData().getAge() == age) {
                 temp.setNext(temp.getNext().getNext());
                 size--;
+                exist=true;
             } else {
                 temp = temp.getNext();
             }
         }
+        if(!exist){
+            throw new ListSEException("No hay ninos con la edad ingresada");
+        }
     }
 
-    public void getMixBoyAndGirl() {
+
+    public void getMixBoyAndGirl()throws ListSEException {
         if (head != null) {
             ListSE listCopy = new ListSE();
             int countGirl = 0;
@@ -263,25 +311,29 @@ public class ListSE {
                 temp = temp.getNext();
             }
             head = listCopy.getHead();
+        }else {
+            throw new ListSEException("La lista está vacía.");
         }
     }
 
-    public void getLosePosition(String identification, int position){
+    public void getLosePosition(String identification, int position) throws ListSEException {
         if (head == null || position <= 0) {
-            return;
+            throw new ListSEException("La lista está vacía");
         }
+
         Node temp = head;
         Node prev = null;
         int count = 1;
+
         while (temp != null) {
             if (temp.getData().getIdentification().equals(identification)) {
                 Kid kidCopy = temp.getData();
                 int newPosition = count + position;
+
                 if (newPosition > size) {
-                    // Si la nueva posición no es válida, no hacemos nada
-                    return;
+                    throw new ListSEException("El niño con identificación " + identification + " no puede perder "
+                            + position + " posiciones");
                 } else if (prev == null) {
-                    // Si el nodo a mover es el primer nodo de la lista
                     head = head.getNext();
                     addInPosition(kidCopy, newPosition);
                 } else {
@@ -289,18 +341,23 @@ public class ListSE {
                     prev.setNext(temp.getNext());
                     addInPosition(kidCopy, newPosition);
                 }
-                break;
+
+                return;
             }
+
             prev = temp;
             temp = temp.getNext();
             count++;
         }
+
+        throw new ListSEException("No se encontró la identificación del niño");
     }
 
 
-    public void getGainPosition(String identification, int position) {
+
+   public void getGainPosition(String identification, int position)throws ListSEException {
         if (head == null || position <= 0) {
-            return;
+            throw new ListSEException("La lista esta vacia");
         }
         Node temp = head;
         Node prev = null;
@@ -309,22 +366,22 @@ public class ListSE {
             if (temp.getData().getIdentification().equals(identification)) {
                 Kid kidCopy = temp.getData();
                 if (count - position < 1) {
-                    // Si la nueva posición no es válida, no hacemos nada
-                    return;
+                    throw new ListSEException("El nino con identificación " + identification + " no puede ganar "
+                            + position + " posiciones");
                 } else if (prev == null) {
-                    // Si el nodo a mover es el primer nodo de la lista
                     head = head.getNext();
+                    addInPosition(kidCopy, count - position);
                 } else {
-                    // Si el nodo a mover no es el primer nodo de la lista
                     prev.setNext(temp.getNext());
+                    addInPosition(kidCopy, count - position);
                 }
-                addInPosition(kidCopy, count - position);
-                break;
+                return;
             }
             prev = temp;
             temp = temp.getNext();
             count++;
         }
+       throw new ListSEException("No se encontró la identificación del nino");
     }
 
     public int getPositionById(String identification) {
@@ -340,24 +397,31 @@ public class ListSE {
         return 0;
     }
 
-   public void getOrderToEndKidByLetter(String letter){
+    public void getOrderToEndKidByLetter(String letter) throws ListSEException {
         if (head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
+            int count = 0; // Contador de niños que inician con la letra
             while (temp != null) {
                 if (temp.getData().getName().startsWith(letter)) {
                     listCp.add(temp.getData());
+                    count++;
                 } else {
                     listCp.addToStart(temp.getData());
                 }
-
                 temp = temp.getNext();
             }
+            if (count == 0) {
+                throw new ListSEException("No se encontraron niños que su nombre inicie con la letra " + letter);
+            }
             this.head = listCp.getHead();
+        } else {
+            throw new ListSEException("La lista esta vacia");
         }
     }
 
-    public ReportKidsByAgeRangeDTO getGenerateAgeRangeReport(byte minAge, byte maxAge) {
+
+    public ReportKidsByAgeRangeDTO getGenerateAgeRangeReport(byte minAge, byte maxAge)throws ListSEException {
         int numKidsByRange = 0;
         List<Kid> kidsByRange = new ArrayList<>();
 
@@ -372,6 +436,8 @@ public class ListSE {
                 }
                 temp = temp.getNext();
             }
+        }else{
+            throw new ListSEException("La lista esta vacia");
         }
         ReportKidsByAgeRangeDTO report = new ReportKidsByAgeRangeDTO(numKidsByRange, minAge, maxAge, kidsByRange);
         return report;

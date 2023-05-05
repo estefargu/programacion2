@@ -1,5 +1,6 @@
 package co.edu.umanizales.tadsmain.service;
 
+import co.edu.umanizales.tadsmain.exception.ListSEException;
 import co.edu.umanizales.tadsmain.model.ListDE;
 import co.edu.umanizales.tadsmain.model.NodeDE;
 import co.edu.umanizales.tadsmain.model.Pet;
@@ -28,7 +29,7 @@ public class ListDEService {
         return petList;
     }
 
-    public void invert(){pets.invert();
+    public void invert()throws ListSEException {pets.invert();
     }
 
 }

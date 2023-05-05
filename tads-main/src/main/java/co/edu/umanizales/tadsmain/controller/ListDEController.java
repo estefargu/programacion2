@@ -1,6 +1,7 @@
 package co.edu.umanizales.tadsmain.controller;
 
 import co.edu.umanizales.tadsmain.controller.dto.*;
+import co.edu.umanizales.tadsmain.exception.ListSEException;
 import co.edu.umanizales.tadsmain.model.Kid;
 import co.edu.umanizales.tadsmain.model.Location;
 import co.edu.umanizales.tadsmain.model.NodeDE;
@@ -38,18 +39,17 @@ public class ListDEController {
     public ResponseEntity<ResponseDTO> addToStart(@Valid @RequestBody PetDTO petDTO){
         Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
         if(location == null) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe",
+            return new ResponseEntity<>(new ResponseDTO(404, "La ubicación no existe",
                     null), HttpStatus.OK);
         }
-        boolean id = listDEService.getPets().getConfirmKidById(petDTO.getId());
-        if(!id){
+        try {
+            listDEService.getPets().addToStart(new Pet(petDTO.getName(), petDTO.getId(),
+                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location));
+        } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
-                    409, "La identificación de la mascota ya existe",
-                    null), HttpStatus.BAD_REQUEST);
+                    409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        listDEService.getPets().addToStart(new Pet(petDTO.getName(), petDTO.getId(),
-                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location));
         return new ResponseEntity<>(new ResponseDTO(
                 200,"Se ha adicionado la mascota al inicio de la lista",
                 null), HttpStatus.OK);
@@ -58,35 +58,20 @@ public class ListDEController {
     public ResponseEntity<ResponseDTO> addInPosition(@Valid @RequestBody PetDTO petDTO, @PathVariable int position) {
         Location location = locationService.getLocationByCode(petDTO.getCodeLocation());
         if(location == null) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe",
+            return new ResponseEntity<>(new ResponseDTO(404, "La ubicación no existe",
                     null), HttpStatus.OK);
-        }
-        boolean id = listDEService.getPets().getConfirmKidById(petDTO.getId());
-        if(!id){
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, "La identificación de la mascota ya existe",
-                    null), HttpStatus.BAD_REQUEST);
-        }
-        int listSize = listDEService.getPets().getSize();
-        if (position < 1 || position > listSize + 1) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    400, "La posición especificada no es válida. La lista tiene "
-                    + listSize + " mascotas",
-                    null), HttpStatus.BAD_REQUEST);
         }
         Pet pet = new Pet(petDTO.getName(), petDTO.getId(),
                 petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location);
-        if(position ==1 ){
-            listDEService.getPets().addToStart(pet);
+        try {
+            listDEService.getPets().addInPosition(pet, position);
             return new ResponseEntity<>(new ResponseDTO(
                     200, "Se ha adicionado la mascota en la posición " + position,
                     null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        listDEService.getPets().addInPosition(pet, position);
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha adicionado la mascota en la posición " + position,
-                null), HttpStatus.OK);
     }
     @PostMapping(path="/addtoend")
     public ResponseEntity<ResponseDTO> addToEnd(@Valid @RequestBody PetDTO petDTO){
@@ -95,28 +80,26 @@ public class ListDEController {
             return new ResponseEntity<>(new ResponseDTO(404, "La ubicación no existe",
                     null), HttpStatus.OK);
         }
-        boolean id = listDEService.getPets().getConfirmKidById(petDTO.getId());
-        if(!id){
+        try {
+            listDEService.getPets().addToEnd(new Pet(petDTO.getName(), petDTO.getId(),
+                    petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location));
             return new ResponseEntity<>(new ResponseDTO(
-                    409, "La identificación de la mascota ya existe",
-                    null), HttpStatus.BAD_REQUEST);
+                    200,"Se ha adicionado la mascota al final de la lista",
+                    null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        listDEService.getPets().addToEnd(new Pet(petDTO.getName(), petDTO.getId(),
-                petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location));
-        return new ResponseEntity<>(new ResponseDTO(
-                200,"Se ha adicionado la mascota al final de la lista",
-                null), HttpStatus.OK);
     }
 
     @DeleteMapping(path="/{id}")
     public ResponseEntity<ResponseDTO> deleteByIdentification(@PathVariable String id){
-        boolean existId = listDEService.getPets().getConfirmKidById(id);
-        if(existId){
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "No existe la identificación ingresada",
-                    null), HttpStatus.NOT_FOUND);
+        try {
+            listDEService.getPets().deleteByIdentification(id);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        listDEService.getPets().deleteByIdentification(id);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha eliminado la mascota con identificación " + id,
                 null), HttpStatus.OK);
@@ -124,7 +107,12 @@ public class ListDEController {
 
     @DeleteMapping(path="/deletepet/{age}")
     public ResponseEntity<ResponseDTO> deleteByAge(@PathVariable byte age){
-        listDEService.getPets().deleteByAge(age);
+        try {
+            listDEService.getPets().deleteByAge(age);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha eliminado la mascota con edad " + age,
                 null), HttpStatus.OK);
@@ -133,16 +121,25 @@ public class ListDEController {
 
     @GetMapping("/invert")
     public ResponseEntity<ResponseDTO> invert(){
-        listDEService.invert();
-        return new ResponseEntity<>(new ResponseDTO(
-                200,"Se ha invertido la lista de mascotas",
-                null), HttpStatus.OK);
-
+        try {
+            listDEService.invert();
+            return new ResponseEntity<>(new ResponseDTO(
+                    200,"Se ha invertido la lista de mascotas",
+                    null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
     }
 
     @GetMapping(path= "/ordermaletostart")
     public ResponseEntity<ResponseDTO> getOrderMaleToStart(){
-        listDEService.getPets().orderMaleToStart();
+        try {
+            listDEService.getPets().orderMaleToStart();
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(
                 200,"Se han colocado los machos al inicio y las hembras al final",
                 null), HttpStatus.OK);
@@ -150,7 +147,12 @@ public class ListDEController {
 
     @GetMapping(path = "/mixmaleandfemale")
     public ResponseEntity<ResponseDTO> getMixMaleAndFemale(){
-        listDEService.getPets().getMixMaleAndFemale();
+        try {
+            listDEService.getPets().getMixMaleAndFemale();
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(200,
                 "Se ha intercalado la lista de mascotas correctamente.",null),HttpStatus.OK);
     }
@@ -214,45 +216,36 @@ public class ListDEController {
     }
     @GetMapping(path = "/loseposition/{id}/{position}")
     public ResponseEntity<ResponseDTO> getLosePosition(@PathVariable String id, @PathVariable int position) {
-        boolean code = listDEService.getPets().getConfirmKidById(id);
-        if(code){
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, "La identificación de la mascota no existe",
-                    null), HttpStatus.BAD_REQUEST);
+        try {
+            listDEService.getPets().getLosePosition(id, position);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        int positionPet = listDEService.getPets().getPositionById(id);
-        int newPosition = positionPet + position;
-        if (newPosition > listDEService.getPets().getSize()) {
-            return new ResponseEntity<>(new ResponseDTO(400, "La mascota con identificación " + id
-                    + " no puede perder " + position + " posiciones", null), HttpStatus.BAD_REQUEST);
-        }
-        listDEService.getPets().getLosePosition(id, position);
         return new ResponseEntity<>(new ResponseDTO(200, "La mascota con identificación "
                 + id + " ha perdido " + position + " posición/es", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/gainposition/{id}/{position}")
     public ResponseEntity<ResponseDTO> getGainPosition(@PathVariable String id, @PathVariable int position) {
-        boolean code = listDEService.getPets().getConfirmKidById(id);
-        if(code){
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, "La identificación de la mascota no existe",
-                    null), HttpStatus.BAD_REQUEST);
+        try {
+            listDEService.getPets().getGainPosition(id, position);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
         }
-        int positionPet = listDEService.getPets().getPositionById(id);
-        int newPosition = positionPet - position;
-        if (newPosition < 1) {
-            return new ResponseEntity<>(new ResponseDTO(400, "La mascota con identificación " + id
-                    + " no puede ganar " + position + " posiciones", null), HttpStatus.BAD_REQUEST);
-        }
-        listDEService.getPets().getGainPosition(id, position);
         return new ResponseEntity<>(new ResponseDTO(200, "La mascota con identificación "
                 + id + " ha ganado " + position + " posición/es", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/ordertoendpetbyletter/{letter}")
     public ResponseEntity<ResponseDTO> getOrderToEndKidByLetter(@PathVariable String letter) {
-        listDEService.getPets().getOrderToEndPetByLetter(letter);
+        try {
+            listDEService.getPets().getOrderToEndPetByLetter(letter);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(200,
                 "Se colocaron las mascotas que empiezan por la letra "
                         + letter + " al final de la lista", null), HttpStatus.OK);
@@ -260,7 +253,13 @@ public class ListDEController {
 
     @GetMapping(path = "/generateagerangereport/{ageMin}/{ageMax}")
     public ResponseEntity<ResponseDTO> getGenerateAgeRangeReport(@PathVariable byte ageMin, @PathVariable byte ageMax) {
-        ReportPetsByAgeRangeDTO report = listDEService.getPets().getGenerateAgeRangeReport(ageMin, ageMax);
+        ReportPetsByAgeRangeDTO report = null;
+        try {
+            report = listDEService.getPets().getGenerateAgeRangeReport(ageMin, ageMax);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
         return new ResponseEntity<>(new ResponseDTO(200, report, null), HttpStatus.OK);
     }
 
