@@ -263,4 +263,10 @@ public class ListDEController {
         return new ResponseEntity<>(new ResponseDTO(200, report, null), HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "/deleteinposition/{id}")
+    public ResponseEntity<ResponseDTO> getDeleteInPosition(@PathVariable String id){
+        listDEService.getPets().getDeleteInPosition(id);
+        return new ResponseEntity<>(new ResponseDTO(200,
+                "El nino con identificacion " + id + " ha sido eliminado", null), HttpStatus.OK);
+    }
 }

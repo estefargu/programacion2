@@ -350,4 +350,42 @@ public class ListDE {
         return new ReportPetsByAgeRangeDTO(numPetsByRange, minAge, maxAge, petsByRange);
     }
 
+    /*Eliminar en sitio (me entra por parametro el id de la mascota)
+    Si hay datos
+        si la identificacion por parametro es igual a las que ya hay si el brazo anterior es igual a null
+            lo elimino y su siguiente de su siguiente va a hacer la nueva cabeza
+
+        le digo a temporal que se pare en cabeza
+        Si la identificacion por parametro es igual a la ingresada
+           le digo a temporal que suelte a su siguiente y a su anterior
+           y que su anterio coja a su siguiente y que su siguiente coja a su anterior
+
+       si la identificacion por parametro es igual a las que ya hay y temporal tiene su siguiente igual a null
+        lo elimino y su anterio debria quedar con su siguiente null
+     */
+
+    public void getDeleteInPosition(String id){
+        if(head!= null){
+            if(head.getData().getId().equals(id) && head.getPrevious() == null){
+                size--;
+                head = head.getNext();
+            }
+
+            NodeDE temp = head;
+            while(temp.getNext() != null) {
+                if (temp.getData().getId().equals(id)) {
+                    size--;
+                    temp.getPrevious().setNext(temp.getNext());
+                    temp.getNext().setPrevious(temp.getPrevious());
+                }
+                temp = temp.getNext();
+            }
+
+            if(temp.getData().getId().equals(id) && temp.getNext() == null){
+                size--;
+                temp.getPrevious().setNext(null);
+            }
+        }
+    }
+
 }
