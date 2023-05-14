@@ -64,8 +64,8 @@ public class ListSE {
      */
     public void addToStart(Kid kid) throws ListSEException{
         if (head != null) {
-            if (head.getData().getIdentification().equals(kid.getIdentification())) {
-                throw new ListSEException("Ya existe un niño con esa identificación");
+            if(!getConfirmKidById(kid.getIdentification())) {
+                throw new ListSEException("Ya existe un niño con esa identificacion");
             }
             Node newNode = new Node(kid);
             newNode.setNext(head);
@@ -426,6 +426,5 @@ public class ListSE {
         ReportKidsByAgeRangeDTO report = new ReportKidsByAgeRangeDTO(numKidsByRange, minAge, maxAge, kidsByRange);
         return report;
     }
-
 
 }

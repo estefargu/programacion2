@@ -18,4 +18,7 @@ public class PetDTO {
     private byte age;
     @NotBlank(message = "La locacion es un campo obligatorio")
     private String codeLocation;
+    @Pattern(regexp = "(dirty|clean)", message = "El valor del campo 'bath' debe ser 'dirty' o 'clean'")
+    private String bath;
+
 }

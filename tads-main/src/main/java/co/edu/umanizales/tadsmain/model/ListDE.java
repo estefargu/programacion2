@@ -13,9 +13,8 @@ public class ListDE {
     private int size;
 
     public void addToStart(Pet pet)throws ListSEException {
-        if(head !=null)
-        {
-            if(head.getData().getId().equals(pet.getId())) {
+        if(head !=null){
+            if(!getConfirmKidById(pet.getId())) {
                 throw new ListSEException("Ya existe una mascota con esa identificacion");
             }
             NodeDE newNodeDE = new NodeDE(pet);
@@ -30,34 +29,37 @@ public class ListDE {
     }
 
     public void addInPosition(Pet pet, int position) throws ListSEException {
-        if (position <= 0 || position > size + 1) {
-            throw new ListSEException("Posición inválida");
+        if(position>size){
+            throw new ListSEException("No se puede agregar la mascota en esa posicion");
         }
         if (head != null) {
-            NodeDE temp = head;
-            while (temp != null) {
-                if (temp.getData().getId().equals(pet.getId())) {
-                    throw new ListSEException("Ya existe una mascota con esa identificación");
-                }
-                temp = temp.getNext();
-            }
             if (position == 1) {
+                if(!getConfirmKidById(pet.getId())) {
+                    throw new ListSEException("Ya existe una mascota con esa identificacion");
+                }
                 addToStart(pet);
-            } else {
-                temp = head;
+            }else if (position== size) {
+                if(!getConfirmKidById(pet.getId())) {
+                    throw new ListSEException("Ya existe una mascota con esa identificacion");
+                }
+                addToEnd(pet);
+            }else {
+                NodeDE temp = head;
                 int count = 1;
-                while (count < position - 1 && temp.getNext() != null) {
+                while (temp.getNext() != head && count < position-1) {
+                    if(!getConfirmKidById(pet.getId())) {
+                        throw new ListSEException("Ya existe una mascota con esa identificacion");
+                    }
                     temp = temp.getNext();
                     count++;
                 }
                 NodeDE newNodeDE = new NodeDE(pet);
                 newNodeDE.setNext(temp.getNext());
                 newNodeDE.setPrevious(temp);
-                if (temp.getNext() != null) {
-                    temp.getNext().setPrevious(newNodeDE);
-                }
+                temp.getNext().setPrevious(newNodeDE);
                 temp.setNext(newNodeDE);
             }
+
         } else {
             head = new NodeDE(pet);
         }
@@ -68,13 +70,13 @@ public class ListDE {
         if (head != null) {
             NodeDE temp = head;
             while (temp.getNext() != null) {
-                if (temp.getData().getId().equals(pet.getId())) {
-                    throw new ListSEException("Ya existe una mascota  con esa identificación");
+                if(!getConfirmKidById(pet.getId())) {
+                    throw new ListSEException("Ya existe una mascota con esa identificacion");
                 }
                 temp = temp.getNext();
             }
-            if (temp.getData().getId().equals(pet.getId())) {
-                throw new ListSEException("Ya existe una mascota con esa identificación");
+            if(!getConfirmKidById(pet.getId())) {
+                throw new ListSEException("Ya existe una mascota con esa identificacion");
             }
             // temp es el último nodo de la lista
             NodeDE newNodeDE = new NodeDE(pet);
@@ -352,7 +354,7 @@ public class ListDE {
 
     /*Eliminar en sitio (me entra por parametro el id de la mascota)
     Si hay datos
-        si la identificacion por parametro es igual a las que ya hay si el brazo anterior es igual a null
+        si la identificacion por parametro es igual a las que ya hay y si el brazo anterior es igual a null
             lo elimino y su siguiente de su siguiente va a hacer la nueva cabeza
 
         le digo a temporal que se pare en cabeza
@@ -361,7 +363,7 @@ public class ListDE {
            y que su anterio coja a su siguiente y que su siguiente coja a su anterior
 
        si la identificacion por parametro es igual a las que ya hay y temporal tiene su siguiente igual a null
-        lo elimino y su anterio debria quedar con su siguiente null
+        lo elimino y su anterio deberia quedar con su siguiente null
      */
 
     public void getDeleteInPosition(String id){
@@ -386,6 +388,18 @@ public class ListDE {
                 temp.getPrevious().setNext(null);
             }
         }
+    }
+
+    public boolean getConfirmKidById(String id) {
+        if (head != null) {
+            NodeDE temp = head;
+            while (temp != null) {
+                if (temp.getData().getId().equals(id))
+                    return false; //si retorna false es que la identificacion ya exite
+                temp = temp.getNext();
+            }
+        }
+        return true; // si retorna true es que la identificacion no existe, osea se puede agregar
     }
 
 }

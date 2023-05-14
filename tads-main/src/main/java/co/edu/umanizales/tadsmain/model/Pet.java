@@ -12,5 +12,6 @@ public class Pet {
     private String typeOfAnimal;
     private byte age;
     private Location location;
+    private String bath;
 
 }

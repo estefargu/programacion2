@@ -15,7 +15,7 @@ import java.util.Map;
 public class RestController {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDTO> hadleValidateExptions(MethodArgumentNotValidException ex){
+    public ResponseEntity<ResponseDTO> handleValidateExceptions(MethodArgumentNotValidException ex){
         Map<String,String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error)->{
             String fieldName = ((FieldError) error).getField();

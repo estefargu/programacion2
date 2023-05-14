@@ -2,17 +2,13 @@ package co.edu.umanizales.tadsmain.controller;
 
 import co.edu.umanizales.tadsmain.controller.dto.*;
 import co.edu.umanizales.tadsmain.exception.ListSEException;
-import co.edu.umanizales.tadsmain.model.Kid;
 import co.edu.umanizales.tadsmain.model.Location;
-import co.edu.umanizales.tadsmain.model.NodeDE;
 import co.edu.umanizales.tadsmain.model.Pet;
 import co.edu.umanizales.tadsmain.service.ListDEService;
-import co.edu.umanizales.tadsmain.service.ListSEService;
 import co.edu.umanizales.tadsmain.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -44,7 +40,7 @@ public class ListDEController {
         }
         try {
             listDEService.getPets().addToStart(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location));
+                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath()));
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     409,e.getMessage(),
@@ -62,7 +58,7 @@ public class ListDEController {
                     null), HttpStatus.OK);
         }
         Pet pet = new Pet(petDTO.getName(), petDTO.getId(),
-                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location);
+                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath());
         try {
             listDEService.getPets().addInPosition(pet, position);
             return new ResponseEntity<>(new ResponseDTO(
@@ -82,7 +78,7 @@ public class ListDEController {
         }
         try {
             listDEService.getPets().addToEnd(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location));
+                    petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location, petDTO.getBath()));
             return new ResponseEntity<>(new ResponseDTO(
                     200,"Se ha adicionado la mascota al final de la lista",
                     null), HttpStatus.OK);
@@ -267,6 +263,6 @@ public class ListDEController {
     public ResponseEntity<ResponseDTO> getDeleteInPosition(@PathVariable String id){
         listDEService.getPets().getDeleteInPosition(id);
         return new ResponseEntity<>(new ResponseDTO(200,
-                "El nino con identificacion " + id + " ha sido eliminado", null), HttpStatus.OK);
+                "La mascota con identificacion " + id + " ha sido eliminado", null), HttpStatus.OK);
     }
 }
