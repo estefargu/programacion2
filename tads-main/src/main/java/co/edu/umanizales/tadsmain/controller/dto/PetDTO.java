@@ -21,4 +21,6 @@ public class PetDTO {
     @Pattern(regexp = "(dirty|clean)", message = "El valor del campo 'bath' debe ser 'dirty' o 'clean'")
     private String bath;
 
+    private int pulgas;
+
 }

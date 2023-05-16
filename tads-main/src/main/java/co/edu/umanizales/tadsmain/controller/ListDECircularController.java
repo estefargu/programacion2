@@ -39,7 +39,7 @@ public class ListDECircularController {
         }
         try {
             listDECircularService.getPets().addToStart(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath()));
+                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath(), petDTO.getPulgas()));
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     200,e.getMessage(), null), HttpStatus.OK);
@@ -57,7 +57,7 @@ public class ListDECircularController {
                     null), HttpStatus.OK);
         }
         Pet pet = new Pet(petDTO.getName(), petDTO.getId(),
-                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath());
+                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath(),petDTO.getPulgas());
         try {
             listDECircularService.getPets().addInPosition(pet, position);
         } catch (ListSEException e) {
@@ -80,7 +80,7 @@ public class ListDECircularController {
         }
         try {
             listDECircularService.getPets().addToEnd(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath()));
+                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath(), petDTO.getPulgas()));
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     200,e.getMessage(), null), HttpStatus.OK);
@@ -102,4 +102,11 @@ public class ListDECircularController {
                 null), HttpStatus.OK);
     }
 
+        @GetMapping(path = "/petwithmorefleas")
+        public ResponseEntity<ResponseDTO> getPerWithMoreFleas(){
+            int maxFleas = listDECircularService.getPets().getPetWithMoreFleas();
+            return new ResponseEntity<>(new ResponseDTO(200,"La mascota con mas pulgas tiene "
+                    + maxFleas + " pulgas", null), HttpStatus.OK);
+
+        }
 }

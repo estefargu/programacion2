@@ -7,11 +7,12 @@ import lombok.Data;
 @AllArgsConstructor
 public class Pet {
     private String name;
-    private String id;
+    private String  id;
     private String gender;
     private String typeOfAnimal;
     private byte age;
     private Location location;
     private String bath;
+    private int pulgas;
 
 }

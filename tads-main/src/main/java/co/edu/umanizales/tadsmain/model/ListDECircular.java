@@ -84,7 +84,7 @@ public class ListDECircular {
                     throw new ListSEException("Ya existe una mascota con esa identificacion");
                 }
                addToStart(pet);
-            }else if (position== size) {
+            }else if (position == size) {
                 if(!getConfirmKidById(pet.getId())) {
                     throw new ListSEException("Ya existe una mascota con esa identificacion");
                 }
@@ -239,5 +239,49 @@ public class ListDECircular {
             }
         }
         return true; // La identificación no existe
+    }
+
+    /*
+    Mascota con mas pulgas
+    si hay datos
+        llamo ayudante le digo que se pare en cabeza
+        creo la variable donde voy a ir guardando la mascota con mas pulgas
+        y la inicializo con los datos de la cantidad de pulgas de cabeza, esto para tener la primera referencia
+
+        mientras el siguiente no sea cabeza
+            si la cantidad de pulgas donde estoy parada es mayor o igual que la que la cantidad de pulgas de cabeza
+            esto para tener una referencia al empezar el recorrido de la lista, es decir llamo a la variable que cree arriba
+            y le coloco igual por si hay dos mascotas con el mismo numero de pulgas que me actualice con la ultima
+            mascota encontrada con esa cantidad de pulgas
+                actualizo la variable creada arriba, que es la de la mascota con mayor cantidad de pulgas
+            sigo hasta terminar de recorrer la lista
+
+        tengo que volver a preguntar si la cantidad de pulgas donde estoy parada es mayor o igual que la variable
+        que cree arriba, esto para verificar la cantidad de pulgas en el ultimo nodo y le coloco igual por si hay
+        dos mascotas con el mismo numero de pulgas que me actualice con la ultima mascota encontrada
+        con esa cantidad de pulgas
+
+        me retorna la mascota con mas pulgas
+    no hay datos
+        me retorna 0
+     */
+
+    public int getPetWithMoreFleas(){
+        if(head!=null){
+            NodeDE temp = head;
+            int morePulgas = head.getData().getPulgas();
+            while(temp.getNext() != head){
+                if(temp.getData().getPulgas() >= morePulgas){
+                    morePulgas = temp.getData().getPulgas();
+                }
+                temp = temp.getNext();
+            }
+            // verificar el ultimo nodo
+            if(temp.getData().getPulgas() >= morePulgas) {
+                morePulgas = temp.getData().getPulgas();
+            }
+            return morePulgas;
+        }
+        return 0;
     }
 }

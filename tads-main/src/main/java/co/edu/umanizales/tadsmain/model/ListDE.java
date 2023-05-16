@@ -29,38 +29,32 @@ public class ListDE {
     }
 
     public void addInPosition(Pet pet, int position) throws ListSEException {
-        if(position>size){
-            throw new ListSEException("No se puede agregar la mascota en esa posicion");
-        }
         if (head != null) {
+            NodeDE temp = head;
+            while (temp != null) {
+                if (temp.getData().getId().equals(pet.getId())) {
+                    throw new ListSEException("Ya existe una mascota con esa identificación");
+                }
+                temp = temp.getNext();
+            }
             if (position == 1) {
-                if(!getConfirmKidById(pet.getId())) {
-                    throw new ListSEException("Ya existe una mascota con esa identificacion");
-                }
                 addToStart(pet);
-            }else if (position== size) {
-                if(!getConfirmKidById(pet.getId())) {
-                    throw new ListSEException("Ya existe una mascota con esa identificacion");
-                }
-                addToEnd(pet);
-            }else {
-                NodeDE temp = head;
+            } else {
+                temp = head;
                 int count = 1;
-                while (temp.getNext() != head && count < position-1) {
-                    if(!getConfirmKidById(pet.getId())) {
-                        throw new ListSEException("Ya existe una mascota con esa identificacion");
-                    }
+                while (count < position - 1 && temp.getNext() != null) {
                     temp = temp.getNext();
                     count++;
                 }
-                NodeDE newNodeDE = new NodeDE(pet);
-                newNodeDE.setNext(temp.getNext());
-                newNodeDE.setPrevious(temp);
-                temp.getNext().setPrevious(newNodeDE);
-                temp.setNext(newNodeDE);
-            }
-
-        } else {
+                    NodeDE newNodeDE = new NodeDE(pet);
+                    newNodeDE.setNext(temp.getNext());
+                    newNodeDE.setPrevious(temp);
+                    if (temp.getNext() != null) {
+                        temp.getNext().setPrevious(newNodeDE);
+                    }
+                    temp.setNext(newNodeDE);
+                }
+        }else{
             head = new NodeDE(pet);
         }
         size++;

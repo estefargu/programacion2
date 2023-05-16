@@ -40,7 +40,7 @@ public class ListDEController {
         }
         try {
             listDEService.getPets().addToStart(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath()));
+                    petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath(), petDTO.getPulgas()));
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     409,e.getMessage(),
@@ -58,7 +58,7 @@ public class ListDEController {
                     null), HttpStatus.OK);
         }
         Pet pet = new Pet(petDTO.getName(), petDTO.getId(),
-                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath());
+                petDTO.getGender(),petDTO.getTypeOfAnimal(), petDTO.getAge(), location, petDTO.getBath(), petDTO.getPulgas());
         try {
             listDEService.getPets().addInPosition(pet, position);
             return new ResponseEntity<>(new ResponseDTO(
@@ -78,7 +78,7 @@ public class ListDEController {
         }
         try {
             listDEService.getPets().addToEnd(new Pet(petDTO.getName(), petDTO.getId(),
-                    petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location, petDTO.getBath()));
+                    petDTO.getGender(), petDTO.getTypeOfAnimal(), petDTO.getAge(),location, petDTO.getBath(), petDTO.getPulgas()));
             return new ResponseEntity<>(new ResponseDTO(
                     200,"Se ha adicionado la mascota al final de la lista",
                     null), HttpStatus.OK);

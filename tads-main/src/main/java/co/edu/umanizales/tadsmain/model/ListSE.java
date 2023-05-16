@@ -77,9 +77,6 @@ public class ListSE {
     }
 
     public void addInPosition(Kid kid, int position) throws ListSEException {
-        if(position-1>size){
-            throw new ListSEException("Posicion invalida");
-        }
         if (head != null) {
             if (head.getData().getIdentification().equals(kid.getIdentification())) {
                 throw new ListSEException("Ya existe un niño con esa identificación");
